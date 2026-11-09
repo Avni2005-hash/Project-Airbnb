@@ -3,6 +3,7 @@ const router= express.Router();
 const wrapAsync=require("../utils/wrapAsync");
 const User= require("../models/user.js");
 const passport=require("passport");
+const { route } = require("./listing.js");
 router.get("/signup",(req,res)=>{
     res.render("users/signup.ejs");
 });
@@ -31,4 +32,15 @@ router.post("/login",passport.authenticate("local",{failureRedirect:'/login',fai
     req.flash("success","Welcome back to Wanderlust! You are logged in!");
     res.redirect("/listings");
 });
+
+route.get("/logout",(req,res,next)=>{
+    req.logout((err)=>{
+        if(err){
+            return next(err);
+        }
+        req.flash("success","you are logged out");
+        res.redirect("/listings");
+    });
+});
+
 module.exports=router;
