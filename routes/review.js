@@ -6,26 +6,12 @@ const ExpressError =require("../utils/ExpressError.js");
 const Review=require("../models/review.js");
 const Listing=require("C:/Users/HP/Desktop/HTML_Class/Project_Airbnb/models/listing.js");
 const {validateReview,isReviewAuthor,isLoggedIn} = require("../middleware.js");
+const reviewController = require("../controllers/reviews.js");
+const { destroyReview } = require("../controller/reviews.js");
 
-router.post("/",isLoggedIn,validateReview,wrapAsync(async(req,res)=>{
-    let listing= await Listing.findById(req.params.id);
-    let newReview= new Review(req.body.review);
-    newReview.author = req.user._id;
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-    req.flash("success","New Review Created!");    console.log("new review saved");
-    res.redirect(`/listings/${listing._id}`);
-}));
+router.post("/",isLoggedIn,validateReview,wrapAsync(reviewController.createReview));
 
 //Delete Review Router
-router.delete("/:reviewId",isLoggedIn,isReviewAuthor,wrapAsync(async(req,res)=>{
-    let {id,reviewId}= req.params;
-    await Listing.findByIdAndUpdate(id,{$pull:{reviews: reviewId}});
-    await Review.findByIdAndDelete(reviewId);
-    req.flash("success","Review Deleted!");
-    res.redirect(`/listings/${id}`);
-}));
+router.delete("/:reviewId",isLoggedIn,isReviewAuthor,wrapAsync(reviewController.destroyReview));
 
 module.exports=router;
