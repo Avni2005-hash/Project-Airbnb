@@ -4,22 +4,28 @@ const wrapAsync =require("../utils/wrapAsync.js");
 const Listing=require("C:/Users/HP/Desktop/HTML_Class/Project_Airbnb/models/listing.js");
 const {isLoggedIn,isOwner,validateListing} = require("../middleware.js");
 
-const listingController = require("../controllers/listings.js");
+const listingController = require("../controller/listings.js");
 const { showListing, createListing } = require("../controller/listings.js");
-router.get("/",wrapAsync(listingController.index));
+const {storage}= require("../cloudConfig.js")
+const multer = require("multer");
+const upload = multer({ dest:"storage"});
+
+router
+    .route("/")
+    .get(wrapAsync(listingController.index))
+    .post(isLoggedIn,validateListing,upload.single('listing[image]'),wrapAsync(listingController.createListing));
 
 router.get("/new",isLoggedIn,listingController.renderNewForm);
 
-router.get("/:id",wrapAsync(listingController.showListing));
+router
+    .route("/:id")
+    .get(wrapAsync(listingController.showListing))
+    .put(isLoggedIn,isOwner,validateListing,wrapAsync(listingController.updateListing))
+    .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));
 
 
-router.post("/",validateListing,wrapAsync(listingController.createListing));
 //Edit Route
 router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(listingController.renderEditForm));
 
-//Update Route
-router.put("/:id",isLoggedIn,isOwner,validateListing,wrapAsync(listingController.updateListing));
-//Delete Route
-router.delete("/:id",isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));
 
 module.exports=router;

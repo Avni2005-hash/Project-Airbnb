@@ -6,7 +6,7 @@ const ExpressError =require("../utils/ExpressError.js");
 const Review=require("../models/review.js");
 const Listing=require("C:/Users/HP/Desktop/HTML_Class/Project_Airbnb/models/listing.js");
 const {validateReview,isReviewAuthor,isLoggedIn} = require("../middleware.js");
-const reviewController = require("../controllers/reviews.js");
+const reviewController = require("../controller/reviews.js");
 const { destroyReview } = require("../controller/reviews.js");
 
 router.post("/",isLoggedIn,validateReview,wrapAsync(reviewController.createReview));

@@ -9,12 +9,8 @@ const listingSchema= new Schema({
     },
     description:String,
     image: {
+        url: String,
         filename: String,
-        url: {
-        type: String,
-        default: "https://unsplash.com/photos/a-sunset-over-a-body-of-water-with-houses-in-the-background-jVrZgVhqsqs",
-        set: (v)=> v==="" ? "https://unsplash.com/photos/a-sunset-over-a-body-of-water-with-houses-in-the-background-jVrZgVhqsqs" : v,
-    }
 },
     price: Number,
     location: String,
